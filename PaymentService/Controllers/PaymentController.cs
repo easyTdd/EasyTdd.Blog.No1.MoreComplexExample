@@ -10,7 +10,7 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
 		[HttpPost("callback")]
 		public IActionResult Callback(PaymentCallbackRequest request)
 		{
-			return BadRequest();
+			throw new NotImplementedException();
 		}
 	}
 }
