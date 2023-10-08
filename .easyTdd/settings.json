@@ -1,0 +1,178 @@
+﻿{
+  "TestDoubleForConcrete": {
+    "ClassSuffix": "Builder",
+    "NameInMenu": "Builder",
+    "Folder": "Builders",
+    "AssemblySpecificTargetProjectSuffix": "TestDoubles",
+    "TargetProjectNameForAssembliesWithoutSpecificTargetProject": null,
+    "FileTemplates": [
+      {
+        "NameTemplate": "{{className}}.cs",
+        "ContentTemplateFile": "builder.tpl",
+        "Recreate": true
+      },
+      {
+        "NameTemplate": "{{className}}.Extensions.cs",
+        "ContentTemplateFile": "builder.extensions.tpl",
+        "Recreate": false
+      }
+    ],
+    "ToolingNamespaces": []
+  },
+  "TestDoubleForAbstract": {
+    "ClassSuffix": "Mock",
+    "NameInMenu": "Mock",
+    "Folder": "Mocks",
+    "AssemblySpecificTargetProjectSuffix": "TestDoubles",
+    "TargetProjectNameForAssembliesWithoutSpecificTargetProject": null,
+    "FileTemplates": [
+      {
+        "NameTemplate": "{{className}}.cs",
+        "ContentTemplateFile": "mock.tpl",
+        "Recreate": true
+      },
+      {
+        "NameTemplate": "{{className}}.Extensions.cs",
+        "ContentTemplateFile": "mock.extensions.tpl",
+        "Recreate": false
+      }
+    ],
+    "ToolingNamespaces": [
+      "Moq",
+      "System",
+      "System.Collections.Generic"
+    ]
+  },
+  "Test": {
+    "ClassSuffix": "Tests",
+    "NameInMenu": "Test",
+    "FieldSuffixTemplateForMultiMethod": "Of{{methodName}}",
+    "Folder": null,
+    "AssemblySpecificTargetProjectSuffix": "Tests",
+    "TargetProjectNameForAssembliesWithoutSpecificTargetProject": null,
+    "OutputSettings": {
+      "NUnit": {
+        "FileTemplates": [
+          {
+            "NameTemplate": "{{className}}.cs",
+            "ContentTemplateFile": "nunit.test.tpl",
+            "Recreate": false
+          }
+        ],
+        "ToolingNamespaces": [
+          "System",
+          "Moq",
+          "NUnit.Framework",
+          "FluentAssertions"
+        ]
+      },
+      "MsTest": {
+        "FileTemplates": [
+          {
+            "NameTemplate": "{{className}}.cs",
+            "ContentTemplateFile": "mstest.test.tpl",
+            "Recreate": false
+          }
+        ],
+        "ToolingNamespaces": [
+          "System",
+          "Moq",
+          "Microsoft.VisualStudio.TestTools.UnitTesting",
+          "FluentAssertions"
+        ]
+      },
+      "xUnit": {
+        "FileTemplates": [
+          {
+            "NameTemplate": "{{className}}.cs",
+            "ContentTemplateFile": "xunit.test.tpl",
+            "Recreate": false
+          }
+        ],
+        "ToolingNamespaces": [
+          "System",
+          "Moq",
+          "Xunit",
+          "FluentAssertions"
+        ]
+      }
+    },
+    "DefaultTestFramework": "NUnit"
+  },
+  "TestExternalCases": {
+    "NameInMenu": "Test Cases In External File",
+    "SourceClassNameTemplate": "{{testName}}Cases",
+    "SourceFilePathTemplate": "TestCases\\{{testClassName}}",
+    "OutputSettings": {
+      "NUnit": {
+        "ToolingNamespaces": [
+          "NUnit.Framework",
+          "System.Collections"
+        ],
+        "AttributeTemplateFile": "nunit.test-cases-external.attribute.tpl",
+        "SourceClassTemplateFile": "nunit.test-cases-external.source-class.tpl",
+        "TestAttributeNames": [
+          "Test",
+          "TestCase"
+        ]
+      },
+      "xUnit": {
+        "ToolingNamespaces": [
+          "System.Collections"
+        ],
+        "AttributeTemplateFile": "xunit.test-cases-external.attribute.tpl",
+        "SourceClassTemplateFile": "xunit.test-cases-external.source-class.tpl",
+        "TestAttributeNames": [
+          "Fact",
+          "Theory",
+          "InlineData"
+        ]
+      },
+      "MsTest": {
+        "ToolingNamespaces": [
+          "System.Collections"
+        ],
+        "AttributeTemplateFile": "mstest.test-cases-external.attribute.tpl",
+        "SourceClassTemplateFile": "mstest.test-cases-external.source-class.tpl",
+        "TestAttributeNames": [
+          "TestMethod",
+          "DataTestMethod",
+          "DataRow"
+        ]
+      }
+    },
+    "DefaultTestFramework": "NUnit"
+  },
+  "TestCases": {
+    "NameInMenu": "Test Cases",
+    "OutputSettings": {
+      "NUnit": {
+        "AttributeTemplateFile": "nunit.test-cases.attribute.tpl",
+        "SourceMethodTemplateFile": "nunit.test-cases.source-method.tpl",
+        "TestAttributeNames": [
+          "Test",
+          "TestCase"
+        ]
+      },
+      "xUnit": {
+        "AttributeTemplateFile": "xunit.test-cases.attribute.tpl",
+        "SourceMethodTemplateFile": "xunit.test-cases.source-method.tpl",
+        "TestAttributeNames": [
+          "Fact",
+          "Theory",
+          "InlineData"
+        ]
+      },
+      "MsTest": {
+        "AttributeTemplateFile": "mstest.test-cases.attribute.tpl",
+        "SourceMethodTemplateFile": "mstest.test-cases.source-method.tpl",
+        "TestAttributeNames": [
+          "TestMethod",
+          "DataTestMethod",
+          "DataRow"
+        ]
+      }
+    },
+    "DefaultTestFramework": "NUnit"
+  }
+}
