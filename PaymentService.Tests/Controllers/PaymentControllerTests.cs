@@ -15,9 +15,14 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 		[SetUp]
 		public void Setup()
 		{
-			_request = default;
+			_request = new PaymentCallbackRequest
+			{
+				PaymentReference = "xx",
+				InvoiceNo = "EASY0001",
+				AmountPaid = 1000
+			};
 		}
-		
+
 		[TestCaseSource(nameof(GetCallbackThrowsArgumentExceptionWhenRequestIsNotValidCases))]
 		public void CallbackBadRequestWhenRequestIsNotValid(
 			PaymentCallbackRequest request)
@@ -29,6 +34,16 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 			result
 				.Should()
 				.BeOfType<BadRequestResult>();
+		}
+
+		[Test]
+		public void ReturnsOKWhenInvoiceIsFullyPaid()
+		{
+			var result = CallCallback();
+
+			result
+				.Should()
+				.BeOfType<OkResult>();
 		}
 
 		private static IEnumerable<TestCaseData> GetCallbackThrowsArgumentExceptionWhenRequestIsNotValidCases()
