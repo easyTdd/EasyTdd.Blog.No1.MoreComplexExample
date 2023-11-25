@@ -39,12 +39,12 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 		}
 
 		[TestCaseSource(nameof(GetCallbackThrowsArgumentExceptionWhenRequestIsNotValidCases))]
-		public void CallbackBadRequestWhenRequestIsNotValid(
+		public async Task CallbackBadRequestWhenRequestIsNotValid(
 			PaymentCallbackRequest request)
 		{
 			_request = request;
 
-			var result = CallCallback();
+			var result = await CallCallback();
 
 			result
 				.Should()
@@ -52,9 +52,9 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 		}
 
 		[Test]
-		public void ReturnsOKWhenInvoiceIsFullyPaid()
+		public async Task ReturnsOKWhenInvoiceIsFullyPaid()
 		{
-			var result = CallCallback();
+			var result = await CallCallback();
 
 			result
 				.Should()
@@ -62,18 +62,18 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 		}
 
 		[Test]
-		public void PaymentIsRegisteredWhenInvoiceIsFullyPaid()
+		public async Task PaymentIsRegisteredWhenInvoiceIsFullyPaid()
 		{
-			CallCallback();
+			await CallCallback();
 
 			_invoiceRepositoryMock.Verify();
 		}
 
-		private IActionResult CallCallback()
+		private async Task<IActionResult> CallCallback()
 		{
 			var sut = Create();
 
-			return sut
+			return await sut
 				.Callback(
 					_request
 				);

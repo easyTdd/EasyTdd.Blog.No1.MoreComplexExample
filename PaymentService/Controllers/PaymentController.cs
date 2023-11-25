@@ -16,12 +16,18 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
 		}
 
 		[HttpPost("callback")]
-		public IActionResult Callback(PaymentCallbackRequest request)
+		public async Task<IActionResult> Callback(PaymentCallbackRequest request)
 		{
 			if (!IsRequestValid(request))
 			{
 				return BadRequest();
 			}
+
+			await _invoiceRepository
+				.RegisterPaymentAsync(
+					request.InvoiceNo,
+					request.AmountPaid
+				);
 
 			return Ok();
 		}
