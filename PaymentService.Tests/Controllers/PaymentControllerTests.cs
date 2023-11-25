@@ -14,6 +14,7 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 		private PaymentCallbackRequest _request;
 
 		private Mock<IInvoiceRepository> _invoiceRepositoryMock;
+		private Mock<IBus> _busMock;
 
 		[SetUp]
 		public void Setup()
@@ -67,6 +68,19 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 			await CallCallback();
 
 			_invoiceRepositoryMock.Verify();
+		}
+
+		[Test]
+		public async Task PaidMessageIsSentWhenInvoiceIsFullyPaid()
+		{
+			await CallCallback();
+
+			_busMock
+				.Verify(
+					x => x.PublishAsync(
+						It.Is<Paid>(x => x.InvoiceNo == "EASY0001")
+					)
+				);
 		}
 
 		private async Task<IActionResult> CallCallback()
