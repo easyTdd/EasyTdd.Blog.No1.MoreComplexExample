@@ -9,10 +9,12 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
 	public class PaymentController : ControllerBase
 	{
 		private readonly IInvoiceRepository _invoiceRepository;
+		private readonly IBus _bus;
 
-		public PaymentController(IInvoiceRepository invoiceRepository)
+		public PaymentController(IInvoiceRepository invoiceRepository, IBus bus)
 		{
 			_invoiceRepository = invoiceRepository;
+			_bus = bus;
 		}
 
 		[HttpPost("callback")]
@@ -27,6 +29,11 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
 				.RegisterPaymentAsync(
 					request.InvoiceNo,
 					request.AmountPaid
+				);
+
+			await _bus
+				.PublishAsync(
+					new Paid(request.InvoiceNo)
 				);
 
 			return Ok();

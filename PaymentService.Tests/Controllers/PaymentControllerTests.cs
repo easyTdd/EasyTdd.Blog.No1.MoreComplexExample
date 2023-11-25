@@ -37,6 +37,15 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 				)
 				.Returns(Task.FromResult(0))
 				.Verifiable(Times.Once);
+
+			_busMock = new Mock<IBus>();
+
+			_busMock
+				.Setup(
+					x => x.PublishAsync<Paid>(
+						It.IsAny<Paid>()
+					)
+				);
 		}
 
 		[TestCaseSource(nameof(GetCallbackThrowsArgumentExceptionWhenRequestIsNotValidCases))]
@@ -96,7 +105,8 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 		private PaymentController Create()
 		{
 			return new PaymentController(
-				_invoiceRepositoryMock.Object
+				_invoiceRepositoryMock.Object,
+				_busMock.Object
 			);
 		}
 
