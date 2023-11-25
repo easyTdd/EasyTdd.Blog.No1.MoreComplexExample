@@ -1,4 +1,5 @@
 ﻿using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Models;
+using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
@@ -7,6 +8,13 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
 	[ApiController]
 	public class PaymentController : ControllerBase
 	{
+		private readonly IInvoiceRepository _invoiceRepository;
+
+		public PaymentController(IInvoiceRepository invoiceRepository)
+		{
+			_invoiceRepository = invoiceRepository;
+		}
+
 		[HttpPost("callback")]
 		public IActionResult Callback(PaymentCallbackRequest request)
 		{

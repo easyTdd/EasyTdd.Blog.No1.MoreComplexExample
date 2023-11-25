@@ -5,12 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using System;
+using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Services;
 
 namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 {
 	public class PaymentControllerTests
 	{
 		private PaymentCallbackRequest _request;
+
+		private Mock<IInvoiceRepository> _invoiceRepositoryMock;
 
 		[SetUp]
 		public void Setup()
@@ -21,6 +24,18 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 				InvoiceNo = "EASY0001",
 				AmountPaid = 1000
 			};
+
+			_invoiceRepositoryMock = new Mock<IInvoiceRepository>(MockBehavior.Strict);
+
+			_invoiceRepositoryMock
+				.Setup(
+					x => x.RegisterPaymentAsync(
+						"EASY0001",
+						1000
+					)
+				)
+				.Returns(Task.FromResult(0))
+				.Verifiable(Times.Once);
 		}
 
 		[TestCaseSource(nameof(GetCallbackThrowsArgumentExceptionWhenRequestIsNotValidCases))]
@@ -44,6 +59,31 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 			result
 				.Should()
 				.BeOfType<OkResult>();
+		}
+
+		[Test]
+		public void PaymentIsRegisteredWhenInvoiceIsFullyPaid()
+		{
+			CallCallback();
+
+			_invoiceRepositoryMock.Verify();
+		}
+
+		private IActionResult CallCallback()
+		{
+			var sut = Create();
+
+			return sut
+				.Callback(
+					_request
+				);
+		}
+
+		private PaymentController Create()
+		{
+			return new PaymentController(
+				_invoiceRepositoryMock.Object
+			);
 		}
 
 		private static IEnumerable<TestCaseData> GetCallbackThrowsArgumentExceptionWhenRequestIsNotValidCases()
@@ -77,21 +117,6 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 					}
 				)
 				.SetName("PaymentReference is not set");
-		}
-
-		private IActionResult CallCallback()
-		{
-			var sut = Create();
-
-			return sut
-				.Callback(
-					_request
-				);
-		}
-
-		private PaymentController Create()
-		{
-			return new PaymentController();
 		}
 	}
 }
