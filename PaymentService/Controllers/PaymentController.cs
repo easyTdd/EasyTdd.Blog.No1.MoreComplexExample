@@ -15,7 +15,7 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
 				return BadRequest();
 			}
 
-			throw new NotImplementedException();
+			return Ok();
 		}
 
 		private static bool IsRequestValid(PaymentCallbackRequest request)
