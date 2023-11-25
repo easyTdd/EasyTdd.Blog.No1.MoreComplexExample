@@ -17,10 +17,9 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 		{
 			_request = default;
 		}
-
-		[TestCase(null)]
+		
 		[TestCaseSource(nameof(GetCallbackThrowsArgumentExceptionWhenRequestIsNotValidCases))]
-		public void CallbackThrowsArgumentExceptionWhenRequestIsNotValid(
+		public void CallbackBadRequestWhenRequestIsNotValid(
 			PaymentCallbackRequest request)
 		{
 			_request = request;
