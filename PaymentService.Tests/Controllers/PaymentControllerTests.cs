@@ -84,8 +84,8 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 				.BeOfType<OkResult>();
 		}
 
-		[TestCaseSource(typeof(PaymentIsRegisteredWhenInvoiceIsPaidCases))]
-		public async Task PaymentIsRegisteredWhenInvoiceIsPaid(
+		[TestCaseSource(typeof(PaymentIsRegisteredWhenPaymentIsReceivedCases))]
+		public async Task PaymentIsRegisteredWhenPaymentIsReceived(
 			Invoice invoice)
 		{
 			_invoiceRepositoryResult = invoice;
@@ -117,17 +117,6 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 				.Callback(
 					_request
 				);
-		}
-
-		[Test]
-		public async Task PaymentIsRegisteredWhenInvoiceIsPartiallyPaid()
-		{
-			_invoiceRepositoryResult = new Invoice("EASY0001", 1500, 0);
-
-			await CallCallback();
-
-			_invoiceRepositoryMock
-				.Verify();
 		}
 
 		[Test]
