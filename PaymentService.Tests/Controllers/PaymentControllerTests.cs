@@ -114,7 +114,7 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 		public async Task PartiallyPaidMessageIsSentWhenInvoiceIsPartiallyPaid(
 			Invoice invoice)
 		{
-			_invoiceRepositoryResult = new Invoice("EASY0001", 1500, 0);
+			_invoiceRepositoryResult = invoice;
 
 			await CallCallback();
 
