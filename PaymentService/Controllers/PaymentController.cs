@@ -25,16 +25,29 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
 				return BadRequest();
 			}
 
+			var invoice = await _invoiceRepository
+				.GetByInvoiceNoAsync(request.InvoiceNo);
+
 			await _invoiceRepository
 				.RegisterPaymentAsync(
 					request.InvoiceNo,
 					request.AmountPaid
 				);
 
-			await _bus
-				.PublishAsync(
-					new Paid(request.InvoiceNo)
-				);
+			if (invoice.TotalAmount < request.AmountPaid)
+			{
+				await _bus
+					.PublishAsync(
+						new PartiallyPaid(request.InvoiceNo)
+					);
+			}
+			else
+			{
+				await _bus
+					.PublishAsync(
+						new Paid(request.InvoiceNo)
+					);
+			}
 
 			return Ok();
 		}
