@@ -83,6 +83,8 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 		public async Task ReturnsOKForAllInvoicesWhenRequestIsValid(
 			Invoice invoice)
 		{
+			_invoiceRepositoryResult = invoice;
+
 			var result = await CallCallback();
 
 			result
