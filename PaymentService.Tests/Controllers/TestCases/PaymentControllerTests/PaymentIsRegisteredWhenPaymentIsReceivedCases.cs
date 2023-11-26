@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
 
-public class PaymentIsRegisteredWhenInvoiceIsPaidCases : IEnumerable
+public class PaymentIsRegisteredWhenPaymentIsReceivedCases : IEnumerable
 {
 	public IEnumerator GetEnumerator()
 	{
