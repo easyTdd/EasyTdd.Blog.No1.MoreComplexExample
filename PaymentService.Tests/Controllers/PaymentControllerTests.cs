@@ -11,6 +11,7 @@ using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestC
 using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
 using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
 using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
+using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
 
 namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 {
@@ -127,7 +128,6 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 				);
 		}
 
-		[Test]
 		[TestCaseSource(typeof(UnexpectedPaymentMessageIsSentWhenInvoiceIsOverpaidOrUnknownCases))]
 		public async Task UnexpectedPaymentMessageIsSentWhenInvoiceIsOverpaidOrUnknown(
 			Invoice invoice,
@@ -145,6 +145,25 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 							&& m.Message == message
 						)
 					)
+				);
+		}
+
+		[Test]
+		[TestCaseSource(typeof(PaymentIsNotRegisteredOfrOverpaidAndUnknownInvoicesCases))]
+		public async Task PaymentIsNotRegisteredOfrOverpaidAndUnknownInvoices(
+			Invoice invoice)
+		{
+			_invoiceRepositoryResult = invoice;
+
+			await CallCallback();
+
+			_invoiceRepositoryMock
+				.Verify(
+					x => x.RegisterPaymentAsync(
+						It.IsAny<string>(),
+						It.IsAny<decimal>()
+					),
+					Times.Never
 				);
 		}
 
