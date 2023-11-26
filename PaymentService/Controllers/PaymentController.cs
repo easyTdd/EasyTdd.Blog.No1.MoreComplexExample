@@ -28,6 +28,19 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
 			var invoice = await _invoiceRepository
 				.GetByInvoiceNoAsync(request.InvoiceNo);
 
+			if (invoice == null)
+			{
+				await _bus
+					.PublishAsync(
+						new UnexpectedPayment(
+							request.InvoiceNo,
+							"Payment received for unknown invoice."
+						)
+					);
+
+				return null;
+			}
+
 			await _invoiceRepository
 				.RegisterPaymentAsync(
 					request.InvoiceNo,
