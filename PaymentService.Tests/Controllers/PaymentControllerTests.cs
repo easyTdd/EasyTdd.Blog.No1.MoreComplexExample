@@ -38,6 +38,12 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 				.Returns(Task.FromResult(0))
 				.Verifiable(Times.Once);
 
+			_invoiceRepositoryMock
+				.Setup(x => x.GetByInvoiceNoAsync("EASY0001"))
+				.ReturnsAsync(
+					new Invoice("EASY0001", 1000, 0)
+				);
+
 			_busMock = new Mock<IBus>();
 
 			_busMock
@@ -99,6 +105,32 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 			return await sut
 				.Callback(
 					_request
+				);
+		}
+
+		[Test]
+		public async Task PaymentIsRegisteredWhenInvoiceIsPartiallyPaid()
+		{
+			_request.AmountPaid = 500;
+
+			await CallCallback();
+
+			_invoiceRepositoryMock
+				.Verify();
+		}
+
+		[Test]
+		public async Task PartiallyPaidMessageIsSentWhenInvoiceIsPartiallyPaid()
+		{
+			_request.AmountPaid = 500;
+
+			await CallCallback();
+
+			_busMock
+				.Verify(
+					x => x.PublishAsync(
+						It.Is<PartiallyPaid>(x => x.InvoiceNo == "EASY0001")
+					)
 				);
 		}
 
