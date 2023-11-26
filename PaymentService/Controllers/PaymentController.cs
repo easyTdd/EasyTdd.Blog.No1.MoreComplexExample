@@ -38,7 +38,7 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
 						)
 					);
 
-				return null;
+				return Ok();
 			}
 
 			if (invoice.TotalAmount < invoice.PaidAmount + request.AmountPaid)
@@ -51,7 +51,7 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
 						)
 					);
 
-				return null;
+				return Ok();
 			}
 
 			await _invoiceRepository
