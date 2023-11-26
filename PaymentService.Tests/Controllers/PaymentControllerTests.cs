@@ -13,6 +13,8 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 	{
 		private PaymentCallbackRequest _request;
 
+		private Invoice _invoiceRepositoryResult;
+
 		private Mock<IInvoiceRepository> _invoiceRepositoryMock;
 		private Mock<IBus> _busMock;
 
@@ -25,6 +27,8 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 				InvoiceNo = "EASY0001",
 				AmountPaid = 1000
 			};
+
+			_invoiceRepositoryResult = new Invoice("EASY0001", 1000, 0);
 
 			_invoiceRepositoryMock = new Mock<IInvoiceRepository>(MockBehavior.Strict);
 
@@ -41,7 +45,7 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 			_invoiceRepositoryMock
 				.Setup(x => x.GetByInvoiceNoAsync("EASY0001"))
 				.ReturnsAsync(
-					new Invoice("EASY0001", 1000, 0)
+					() => _invoiceRepositoryResult
 				);
 
 			_busMock = new Mock<IBus>();
@@ -111,7 +115,7 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 		[Test]
 		public async Task PaymentIsRegisteredWhenInvoiceIsPartiallyPaid()
 		{
-			_request.AmountPaid = 500;
+			_invoiceRepositoryResult = new Invoice("EASY0001", 1500, 0);
 
 			await CallCallback();
 
@@ -122,7 +126,7 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 		[Test]
 		public async Task PartiallyPaidMessageIsSentWhenInvoiceIsPartiallyPaid()
 		{
-			_request.AmountPaid = 500;
+			_invoiceRepositoryResult = new Invoice("EASY0001", 1500, 0);
 
 			await CallCallback();
 
