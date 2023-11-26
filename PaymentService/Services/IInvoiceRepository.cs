@@ -9,5 +9,5 @@ public interface IInvoiceRepository
 		decimal amount
 	);
 
-	Task<Invoice> GetByInvoiceNoAsync(string invoiceNo);
+	Task<Invoice?> GetByInvoiceNoAsync(string invoiceNo);
 }

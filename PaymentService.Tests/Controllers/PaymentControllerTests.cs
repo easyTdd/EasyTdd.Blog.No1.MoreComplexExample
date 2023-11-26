@@ -106,7 +106,7 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 			_busMock
 				.Verify(
 					x => x.PublishAsync(
-						It.Is<Paid>(x => x.InvoiceNo == "EASY0001")
+						It.Is<Paid>(m => m.InvoiceNo == "EASY0001")
 					)
 				);
 		}
@@ -122,7 +122,7 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 			_busMock
 				.Verify(
 					x => x.PublishAsync(
-						It.Is<PartiallyPaid>(x => x.InvoiceNo == "EASY0001")
+						It.Is<PartiallyPaid>(m => m.InvoiceNo == "EASY0001")
 					)
 				);
 		}
@@ -141,8 +141,8 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 				.Verify(
 					x => x.PublishAsync(
 						It.Is<UnexpectedPayment>(
-							x => x.InvoiceNo == invoice.InvoiceNo
-							&& x.Message == message
+							m => m.InvoiceNo == "EASY0001"
+							&& m.Message == message
 						)
 					)
 				);

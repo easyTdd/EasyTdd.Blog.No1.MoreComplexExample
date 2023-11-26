@@ -10,7 +10,7 @@ public class UnexpectedPaymentMessageIsSentWhenInvoiceIsOverpaidOrUnknownCases :
 	public IEnumerator GetEnumerator()
 	{
 		yield return new TestCaseData(
-				new Invoice("EASY0002", 1000, 0), //Set value for invoice
+				null, //Set value for invoice
 				"Payment received for unknown invoice." //Set value for message
 			)
 			.SetName("Payment for unknown invoice was received.");
