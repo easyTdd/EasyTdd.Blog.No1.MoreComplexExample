@@ -9,6 +9,7 @@ using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Services;
 using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
 using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
 using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
+using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
 
 namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 {
@@ -109,18 +110,9 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 				);
 		}
 
-		private async Task<IActionResult> CallCallback()
-		{
-			var sut = Create();
-
-			return await sut
-				.Callback(
-					_request
-				);
-		}
-
-		[Test]
-		public async Task PartiallyPaidMessageIsSentWhenInvoiceIsPartiallyPaid()
+		[TestCaseSource(typeof(PartiallyPaidMessageIsSentWhenInvoiceIsPartiallyPaidCases))]
+		public async Task PartiallyPaidMessageIsSentWhenInvoiceIsPartiallyPaid(
+			Invoice invoice)
 		{
 			_invoiceRepositoryResult = new Invoice("EASY0001", 1500, 0);
 
@@ -131,6 +123,16 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 					x => x.PublishAsync(
 						It.Is<PartiallyPaid>(x => x.InvoiceNo == "EASY0001")
 					)
+				);
+		}
+
+		private async Task<IActionResult> CallCallback()
+		{
+			var sut = Create();
+
+			return await sut
+				.Callback(
+					_request
 				);
 		}
 
