@@ -8,13 +8,32 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
 	[ApiController]
 	public class PaymentController : ControllerBase
 	{
+		enum CaseName
+		{
+			Paid,
+			PartiallyPaid,
+			UnexpectedPayment
+		};
+
 		private readonly IInvoiceRepository _invoiceRepository;
 		private readonly IBus _bus;
+
+		private readonly Dictionary<
+			CaseName,
+			Func<Invoice?, PaymentCallbackRequest, Task>
+		> _caseHandlers;
 
 		public PaymentController(IInvoiceRepository invoiceRepository, IBus bus)
 		{
 			_invoiceRepository = invoiceRepository;
 			_bus = bus;
+
+			_caseHandlers = new Dictionary<CaseName, Func<Invoice?, PaymentCallbackRequest, Task>>
+			{
+				[CaseName.Paid] = HandlePaid,
+				[CaseName.PartiallyPaid] = HandlePartiallyPaid,
+				[CaseName.UnexpectedPayment] = HandlerUnexpectedPayment
+			};
 		}
 
 		[HttpPost("callback")]
@@ -28,54 +47,60 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
 			var invoice = await _invoiceRepository
 				.GetByInvoiceNoAsync(request.InvoiceNo);
 
-			if (invoice == null)
-			{
-				await _bus
-					.PublishAsync(
-						new UnexpectedPayment(
-							request.InvoiceNo,
-							"Payment received for unknown invoice."
-						)
-					);
+			var caseName = ResolveCase(invoice, request);
 
-				return Ok();
-			}
+			await _caseHandlers[caseName](invoice, request);
 
-			if (invoice.TotalAmount < invoice.PaidAmount + request.AmountPaid)
-			{
-				await _bus
-					.PublishAsync(
-						new UnexpectedPayment(
-							request.InvoiceNo,
-							"Invoice is overpaid."
-						)
-					);
+			return Ok();
+		}
 
-				return Ok();
-			}
+		private async Task HandlePaid(
+			Invoice? invoice,
+			PaymentCallbackRequest request)
+		{
+			await HandleExpectedPayment(
+				request,
+				new Paid(request.InvoiceNo)
+			);
+		}
 
+		private async Task HandlePartiallyPaid(
+			Invoice? invoice,
+			PaymentCallbackRequest request)
+		{
+			await HandleExpectedPayment(
+				request,
+				new PartiallyPaid(request.InvoiceNo)
+			);
+		}
+
+		private async Task HandleExpectedPayment<TMessage>(
+			PaymentCallbackRequest request,
+			TMessage message)
+		{
 			await _invoiceRepository
 				.RegisterPaymentAsync(
 					request.InvoiceNo,
 					request.AmountPaid
 				);
 
-			if (invoice.TotalAmount > request.AmountPaid)
-			{
-				await _bus
-					.PublishAsync(
-						new PartiallyPaid(request.InvoiceNo)
-					);
-			}
-			else
-			{
-				await _bus
-					.PublishAsync(
-						new Paid(request.InvoiceNo)
-					);
-			}
+			await _bus
+				.PublishAsync(message);
+		}
 
-			return Ok();
+		private async Task HandlerUnexpectedPayment(
+			Invoice? invoice,
+			PaymentCallbackRequest request)
+		{
+			await _bus
+				.PublishAsync(
+					new UnexpectedPayment(
+						request.InvoiceNo,
+						invoice == null
+							? "Payment received for unknown invoice."
+							: "Invoice is overpaid."
+					)
+				);
 		}
 
 		private static bool IsRequestValid(PaymentCallbackRequest request)
@@ -96,6 +121,28 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
 			}
 
 			return true;
+		}
+
+		private CaseName ResolveCase(
+			Invoice? invoice,
+			PaymentCallbackRequest request)
+		{
+			if (invoice == null)
+			{
+				return CaseName.UnexpectedPayment;
+			}
+
+			if (invoice.TotalAmount < invoice.PaidAmount + request.AmountPaid)
+			{
+				return CaseName.UnexpectedPayment;
+			}
+
+			if (invoice.TotalAmount > request.AmountPaid)
+			{
+				return CaseName.PartiallyPaid;
+			}
+
+			return CaseName.Paid;
 		}
 	}
 }
