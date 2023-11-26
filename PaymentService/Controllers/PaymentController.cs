@@ -50,6 +50,8 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
 							"Invoice is overpaid."
 						)
 					);
+
+				return null;
 			}
 
 			await _invoiceRepository
