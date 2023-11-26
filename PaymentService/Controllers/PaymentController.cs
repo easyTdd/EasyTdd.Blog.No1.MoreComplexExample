@@ -34,7 +34,7 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Controllers
 					request.AmountPaid
 				);
 
-			if (invoice.TotalAmount < request.AmountPaid)
+			if (invoice.TotalAmount > request.AmountPaid)
 			{
 				await _bus
 					.PublishAsync(
