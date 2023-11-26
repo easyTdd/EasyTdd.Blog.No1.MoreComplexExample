@@ -12,6 +12,7 @@ using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestC
 using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
 using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
 using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
+using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
 
 namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 {
@@ -78,7 +79,9 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 		}
 
 		[Test]
-		public async Task ReturnsOKWhenInvoiceIsFullyPaid()
+		[TestCaseSource(typeof(ReturnsOKForAllInvoicesWhenRequestIsValidCases))]
+		public async Task ReturnsOKForAllInvoicesWhenRequestIsValid(
+			Invoice invoice)
 		{
 			var result = await CallCallback();
 
