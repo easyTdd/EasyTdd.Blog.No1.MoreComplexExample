@@ -10,6 +10,7 @@ using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestC
 using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
 using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
 using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
+using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
 
 namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 {
@@ -122,6 +123,27 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 				.Verify(
 					x => x.PublishAsync(
 						It.Is<PartiallyPaid>(x => x.InvoiceNo == "EASY0001")
+					)
+				);
+		}
+
+		[Test]
+		[TestCaseSource(typeof(UnexpectedPaymentMessageIsSentWhenInvoiceIsOverpaidOrUnknownCases))]
+		public async Task UnexpectedPaymentMessageIsSentWhenInvoiceIsOverpaidOrUnknown(
+			Invoice invoice,
+			string message)
+		{
+			_invoiceRepositoryResult = invoice;
+
+			await CallCallback();
+
+			_busMock
+				.Verify(
+					x => x.PublishAsync(
+						It.Is<UnexpectedPayment>(
+							x => x.InvoiceNo == invoice.InvoiceNo
+							&& x.Message == message
+						)
 					)
 				);
 		}
