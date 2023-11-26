@@ -6,6 +6,9 @@ using Moq;
 using NUnit.Framework;
 using System;
 using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Services;
+using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
+using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
+using EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers.TestCases.PaymentControllerTests;
 
 namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 {
@@ -81,16 +84,20 @@ namespace EasyTdd.Blog.No1.MoreComplexExample.PaymentService.Tests.Controllers
 				.BeOfType<OkResult>();
 		}
 
-		[Test]
-		public async Task PaymentIsRegisteredWhenInvoiceIsFullyPaid()
+		[TestCaseSource(typeof(PaymentIsRegisteredWhenInvoiceIsPaidCases))]
+		public async Task PaymentIsRegisteredWhenInvoiceIsPaid(
+			Invoice invoice)
 		{
+			_invoiceRepositoryResult = invoice;
+
 			await CallCallback();
 
 			_invoiceRepositoryMock.Verify();
 		}
 
-		[Test]
-		public async Task PaidMessageIsSentWhenInvoiceIsFullyPaid()
+		[TestCaseSource(typeof(PaidMessageIsSentWhenInvoiceIsFullyPaidCases))]
+		public async Task PaidMessageIsSentWhenInvoiceIsFullyPaid(
+			Invoice invoice)
 		{
 			await CallCallback();
 
